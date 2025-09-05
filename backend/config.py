@@ -8,7 +8,7 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')  # MUST be consistent
 
-    DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///church.db')
+    DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///dev.db')
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     SQLALCHEMY_DATABASE_URI = DATABASE_URL

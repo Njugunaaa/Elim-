@@ -9,7 +9,8 @@ class Sermon(db.Model):
     preacher = db.Column(db.String(120), nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     description = db.Column(db.Text)
-    audio_url = db.Column(db.String(255))  # Optional if you upload audio files
+    audio_url = db.Column(db.String(255))  # Optional
+    scripture = db.Column(db.String(255))  # <-- Added this line
 
     def serialize(self):
         return {
@@ -18,5 +19,6 @@ class Sermon(db.Model):
             "preacher": self.preacher,
             "date": self.date.isoformat(),
             "description": self.description,
-            "audio_url": self.audio_url
+            "audio_url": self.audio_url,
+            "scripture": self.scripture
         }

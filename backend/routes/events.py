@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db
-from models.user import User
+from models.user import User, UserRole
 from models.event import Event
 from datetime import datetime
 
@@ -9,22 +9,22 @@ events_bp = Blueprint('events', __name__)
 
 def is_admin(user_id):
     user = User.query.get(user_id)
-    return user and user.role == "admin"
+    return user and user.role == UserRole.ADMIN
 
 @events_bp.route('/', methods=['GET'])
 def get_events():
     events = Event.query.order_by(Event.date.desc()).all()
-    return jsonify([event.serialize() for event in events]), 200
+    return jsonify([event.to_dict() for event in events]), 200
 
 @events_bp.route('/<int:event_id>', methods=['GET'])
 def get_event(event_id):
     event = Event.query.get_or_404(event_id)
-    return jsonify(event.serialize()), 200
+    return jsonify(event.to_dict()), 200
 
 @events_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_event():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     if not is_admin(user_id):
         return jsonify({'error': 'Admin access required'}), 403
 
@@ -41,4 +41,4 @@ def create_event():
     )
     db.session.add(event)
     db.session.commit()
-    return jsonify(event.serialize()), 201
+    return jsonify(event.to_dict()), 201
